@@ -1,0 +1,109 @@
+---
+uti: com.xamarin.workbook
+id: c25569ef-1398-4beb-abc8-419beb7be147
+title: serialize_deserialize_dictionary
+platforms:
+- DotNetCore
+packages:
+- id: Newtonsoft.Json
+  version: 11.0.1
+---
+
+```csharp
+#r "Newtonsoft.Json"
+```
+
+```csharp
+using Newtonsoft.Json;
+```
+
+Interface Definition
+
+```csharp
+interface IDictValue{
+    string A {get;set;}
+    int B {get;set;}
+    bool C {get;set;}
+}
+interface IHasCustomDict {
+    string Id {get;set;}
+    int Avalue {get;set;}
+    Dictionary<string,IDictValue> MyDict {get;set;}
+}
+```
+
+Concrete Type Definition
+
+```csharp
+class DictValue : IDictValue
+{
+   public string A {get;set;}
+   public int B {get;set;}
+   public bool C {get;set;}
+}
+class HasCustomDict {
+   public HasCustomDict(){
+       Id = string.Empty;
+       Avalue = -1;
+       MyDict = new Dictionary<string, IDictValue>();
+   }
+   public string Id {get;set;}
+   public int Avalue {get;set;}
+   public Dictionary<string,IDictValue> MyDict {get;set;}
+}
+```
+
+Create Test Object
+
+```csharp
+var testObj = new HasCustomDict{
+    Id = "a test Id",
+    Avalue = 101,
+    MyDict = new Dictionary<string, IDictValue>{
+        ["1st"] = new DictValue{ A = "abc", B = 1, C = true},
+        ["2nd"] = new DictValue{ A = "def", B = 2, C = false},
+        ["3rd"] = new DictValue{ A = "ghi", B = 3, C = true}
+    }
+}
+```
+
+Json String serialization
+
+```csharp
+string testObjJsonStr = JsonConvert.SerializeObject(testObj);
+```
+
+Try to Deserialize back, get a “Type is an interface or abstract class and cannot be instantiated“ error:
+
+```csharp
+HasCustomDict tryDesObj = JsonConvert.DeserializeObject<HasCustomDict>(testObjJsonStr);
+```
+
+Create Custom Json Converter
+
+```csharp
+class CustomJsonConverter<TClass, TInterface> : JsonConverter
+        where TClass : class 
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(TInterface);
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            serializer.Serialize(writer,value);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            return serializer.Deserialize<TClass>(reader);
+        }
+}
+```
+
+
+
+```csharp
+HasCustomDict desObj = JsonConvert.DeserializeObject<HasCustomDict>(testObjJsonStr,new CustomJsonConverter<DictValue, IDictValue>());
+```
