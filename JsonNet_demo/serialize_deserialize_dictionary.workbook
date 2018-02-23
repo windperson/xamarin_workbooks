@@ -102,7 +102,7 @@ class CustomJsonConverter<TClass, TInterface> : JsonConverter
 }
 ```
 
-
+Append into the  API last parameter, Then we can successfully deserialize the json string :)
 
 ```csharp
 HasCustomDict desObj = JsonConvert.DeserializeObject<HasCustomDict>(testObjJsonStr,new CustomJsonConverter<DictValue, IDictValue>());
