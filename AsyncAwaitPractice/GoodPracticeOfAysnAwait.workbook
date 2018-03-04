@@ -31,7 +31,7 @@ Console.WriteLine("Use GetAwaiter().GetResuot() to wait MyAsync() finish.")
 ```
 
 When providing an async method, to prevent deadlock by misusing , add [`ConfigureAwaiter(false)`](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.configureawait?view=netstandard-2.0 "ConfigureAwaiter\(\)") in implementation when needs to await other method:\
-See: [http://medium.com/bynder-tech/c-why-you-should-use-configureawait-false-in-your-library-code-d7837dce3d7f](http://medium.com/bynder-tech/c-why-you-should-use-configureawait-false-in-your-library-code-d7837dce3d7f)
+See: <http://medium.com/bynder-tech/c-why-you-should-use-configureawait-false-in-your-library-code-d7837dce3d7f>
 
 ```csharp
 async Task WrapOfMyAsync()
@@ -44,3 +44,46 @@ async Task WrapOfMyAsync()
 WrapOfMyAsync().GetAwaiter().GetResult();
 ```
 
+Because await will wrap Exception(s) that happened in side  in a mesy exception stack, so if a method just return await, convert it to return Task instead.
+
+```csharp
+#pragma warning disable 1998
+async Task<string> MyPrintAsync(string input)
+#pragma warning restore 1998
+{
+    if(string.IsNullOrEmpty(input)) {throw new Exception("input value not valid");}
+    var printStr = $"Print: {input}";
+    Console.WriteLine(printStr);
+    return printStr;
+}
+
+//Normal situation looks like no difference
+async Task<string> WrapMyPrintAsync()
+{
+   return await MyPrintAsync("hello world!");
+}
+WrapMyPrintAsync().GetAwaiter().GetResult();
+
+Task<string> SimplifiedWrapMyPrintAsync()
+{
+    return MyPrintAsync("hello again!");
+}
+SimplifiedWrapMyPrintAsync().GetAwaiter().GetResult();
+```
+
+```csharp
+//This kind of method implementation add additional stack traces when exception occured.
+async Task<string> WrapMyPrintCauseExceptionAsync()
+{
+    return await MyPrintAsync(null);
+}
+WrapMyPrintCauseExceptionAsync().GetAwaiter().GetResult();
+```
+
+```csharp
+Task<string> SimplifierWrapMyPrintCauseExceptionAsync()
+{
+    return MyPrintAsync(null);
+}
+SimplifierWrapMyPrintCauseExceptionAsync().GetAwaiter().GetResult();
+```
