@@ -1,0 +1,46 @@
+---
+uti: com.xamarin.workbook
+id: 38cd24b2-2174-45ea-9f9a-96d2e61b5390
+title: GoodPracticeOfAysnAwait
+platforms:
+- DotNetCore
+---
+
+**DO NOT** Use [`Wait()`](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.wait?view=netstandard-2.0 "Wait\(\) method of System.Threading.Tasks.Task") because it will cause Freeze UI on GUI Applicaiton.
+
+```csharp
+#pragma warning disable 1998
+async Task MyAsync()
+#pragma warning restore 1998
+{
+    //simulate something that is async/await coupled
+    Thread.Sleep(new TimeSpan(0,0,1));
+    Console.WriteLine("fininshing execute MyAsync().");
+    return;
+}
+
+ MyAsync().Wait();
+ Console.WriteLine("after wait for MyAsync() finished.");
+```
+
+Use `GetAwaiter().GetResult()` instead:
+
+```csharp
+MyAsync().GetAwaiter().GetResult();
+Console.WriteLine("Use GetAwaiter().GetResuot() to wait MyAsync() finish.")
+```
+
+When providing an async method, to prevent deadlock by misusing , add [`ConfigureAwaiter(false)`](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.configureawait?view=netstandard-2.0 "ConfigureAwaiter\(\)") in implementation when needs to await other method:\
+See: [http://medium.com/bynder-tech/c-why-you-should-use-configureawait-false-in-your-library-code-d7837dce3d7f](http://medium.com/bynder-tech/c-why-you-should-use-configureawait-false-in-your-library-code-d7837dce3d7f)
+
+```csharp
+async Task WrapOfMyAsync()
+{
+    await MyAsync().ConfigureAwait(false);
+    Console.WriteLine("fininshing execute WrapOfMyAsync().");
+    return;
+}
+
+WrapOfMyAsync().GetAwaiter().GetResult();
+```
+
