@@ -41,7 +41,7 @@ class DictValue : IDictValue
    public int B {get;set;}
    public bool C {get;set;}
 }
-class HasCustomDict {
+class HasCustomDict : IHasCustomDict {
    public HasCustomDict(){
        Id = string.Empty;
        Avalue = -1;
