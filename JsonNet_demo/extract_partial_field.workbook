@@ -1,0 +1,57 @@
+---
+uti: com.xamarin.workbook
+id: 42326c1c-cc20-41ff-a4a5-d48cb0d480dc
+title: extract_partial_field
+platforms:
+- DotNetCore
+packages:
+- id: Newtonsoft.Json
+  version: 11.0.2
+---
+
+```csharp
+#r "Newtonsoft.Json"
+```
+
+Example from [https://stackoverflow.com/a/19438910](https://stackoverflow.com/a/19438910 "stackoverflow answer") to show how to extract certain json field.
+
+```csharp
+using Newtonsoft.Json;
+using System.IO;
+public T GetFirstInstance<T>(string propertyName, string jsonStr)
+{
+    using (var stringReader = new StringReader(jsonStr))
+    using (var jsonReader = new JsonTextReader(stringReader))
+    {
+        while (jsonReader.Read())
+        {
+            if (jsonReader.TokenType == JsonToken.PropertyName
+                && propertyName.Equals(jsonReader.Value)
+                && jsonReader.Read())
+            {
+                var jsonSerializer = new JsonSerializer();
+                return jsonSerializer.Deserialize<T>(jsonReader);
+            }
+        }
+        return default(T);
+    }
+}
+```
+
+```csharp
+public class MyType
+{
+    public string Text { get; set; }
+}
+
+string jsonStr = 
+@"{ 
+    ""PropOne"": { ""Text"": ""Data"" }, 
+    ""PropTwo"": ""Data2"" 
+}";
+var  myType = GetFirstInstance<MyType>("PropOne", jsonStr);
+```
+
+```csharp
+var string2nd = GetFirstInstance<string>("PropTwo", jsonStr);
+```
