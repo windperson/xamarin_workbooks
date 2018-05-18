@@ -107,3 +107,26 @@ Append into the  API last parameter, Then we can successfully deserialize the js
 ```csharp
 HasCustomDict desObj = JsonConvert.DeserializeObject<HasCustomDict>(testObjJsonStr,new CustomJsonConverter<DictValue, IDictValue>());
 ```
+
+Or using \[JsonProperty(ItemConverterType = )] attribute:
+
+```csharp
+class MyDictJsonConverter : CustomJsonConverter<DictValue, IDictValue>{}
+
+class HasCustomDict2 : IHasCustomDict {
+   public HasCustomDict2(){
+       Id = string.Empty;
+       Avalue = -1;
+       MyDict = new Dictionary<string, IDictValue>();
+   }
+   public string Id {get;set;}
+   public int Avalue {get;set;}
+
+   [JsonProperty(ItemConverterType =typeof(MyDictJsonConverter))]
+   public Dictionary<string,IDictValue> MyDict {get;set;}
+}
+```
+
+```csharp
+var desObj2 = JsonConvert.DeserializeObject<HasCustomDict2>(testObjJsonStr);
+```
