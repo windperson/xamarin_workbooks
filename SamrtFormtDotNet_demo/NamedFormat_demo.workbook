@@ -1,0 +1,30 @@
+---
+uti: com.xamarin.workbook
+id: e8e2960c-397a-4f29-a509-b57923f66506
+title: NamedFormat_demo
+platforms:
+- DotNetCore
+packages:
+- id: SmartFormat.NET
+  version: 2.2.0
+---
+
+**SmartFormt.Net**\
+https://github.com/scottrippey/SmartFormat.NET
+
+```csharp
+#r "SmartFormat"
+```
+
+```csharp
+using SmartFormat;
+
+var namedPlaceHolder = "hello";
+Smart.Format("{name} world!", new {name = namedPlaceHolder});
+```
+
+```csharp
+var originFileName = "怕.jpg";
+var UploadNamingPattern = "{upload_date:yyyy-MM-dd_HH-mm-ss}___{file_name}";
+Smart.Format(UploadNamingPattern, new {upload_date = DateTime.Now,file_name = originFileName});
+```

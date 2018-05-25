@@ -1,0 +1,47 @@
+---
+uti: com.xamarin.workbook
+id: 66afbf28-b11a-436d-b07d-2c40e1eea0b7
+title: serialize_deserialize_enum
+platforms:
+- DotNetCore
+packages:
+- id: Newtonsoft.Json
+  version: 11.0.2
+---
+
+```csharp
+#r "Newtonsoft.Json"
+```
+
+```csharp
+enum GameResult { Win, Lose, Tie};
+interface IGameResultDto
+{
+    string GameName {get;set;}
+    DateTime PlayDate {get;set;}
+    GameResult PlayResult {get;set;}
+}
+```
+
+```csharp
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+class GameResultDto : IGameResultDto
+{
+    public string GameName {get;set;}
+    public DateTime PlayDate {get;set;}
+    [JsonConverter(typeof(StringEnumConverter))]
+    public GameResult PlayResult {get;set;}
+}
+
+var gameResult = new GameResultDto{ GameName = "tennis", PlayDate = DateTime.Now, PlayResult = GameResult.Win };
+```
+
+```csharp
+string apiJsonStr = JsonConvert.SerializeObject(gameResult);
+```
+
+```csharp
+var convertBack = JsonConvert.DeserializeObject<GameResultDto>(apiJsonStr);
+```
