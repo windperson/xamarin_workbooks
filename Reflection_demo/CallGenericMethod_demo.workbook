@@ -1,0 +1,44 @@
+---
+uti: com.xamarin.workbook
+id: 88167b4c-33c2-4ab8-8521-3a2cb768941f
+title: CallGenericMethod_demo
+platforms:
+- DotNetCore
+---
+
+```csharp
+class DemoTarget
+{
+    public void LogObject<T>(T t)
+    {
+        Console.WriteLine("The object has static type '" + typeof(T).FullName + "',  dynamic type '" + t.GetType() + "', and value '" + t.ToString() + "'");
+    }
+}
+```
+
+```csharp
+class MyType
+{
+    public int TheInt { get; set;}
+    public string TheStr {get; set;}
+
+    public override string ToString()
+    {
+        return $"1: {TheInt}, 2: {TheStr}";
+    }
+}
+```
+
+```csharp
+var userType = typeof(MyType);
+var myObj = new MyType{ TheInt = 101, TheStr = "hello world"};
+```
+
+Use Reflection & dynamic keyword to invoke Generic Method dynamically:
+
+```csharp
+var invokeTarget = new DemoTarget();
+Action<dynamic> func = invokeTarget.LogObject<dynamic>;
+var logObjectMethodInfo = func.Method.GetGenericMethodDefinition().MakeGenericMethod(userType);
+logObjectMethodInfo.Invoke(invokeTarget, new[] { myObj });
+```

@@ -1,0 +1,63 @@
+---
+uti: com.xamarin.workbook
+id: b9d76367-2e86-415b-9ea0-852a5501e860
+title: Reflection_demo
+platforms:
+- Console
+---
+
+```csharp
+var a = new String(new char[]{'T','e','s','t'});
+var typeA = a.GetType()
+```
+
+```csharp
+typeA.GetProperties()
+```
+
+```csharp
+typeA.GetMethods()
+```
+
+```csharp
+typeA.GetMembers()
+```
+
+```csharp
+var equalMethodInfo = typeA.GetMethod("Equals",new Type[]{typeof(String)});
+```
+
+```csharp
+equalMethodInfo.Invoke(a, new object[]{"Test"})
+```
+
+Load Json.NET assembly in current directory
+
+```csharp
+var jsonNetdll = System.Reflection.Assembly.LoadFile(System.IO.Path.GetFullPath("./Newtonsoft.Json.dll"))
+```
+
+```csharp
+jsonNetdll.GetTypes()
+```
+
+```csharp
+class MyJson 
+{
+    public string TheValue {get; set;}
+}
+var myJson = new MyJson{TheValue = a};
+```
+
+```csharp
+var jsonConvertClass = jsonNetdll.GetType("Newtonsoft.Json.JsonConvert");
+jsonConvertClass.GetMethods(bindingAttr:System.Reflection.BindingFlags.Public|System.Reflection.BindingFlags.Static);
+```
+
+```csharp
+var toJsonMethodInfo = jsonConvertClass.GetMethod("SerializeObject",new Type[]{typeof(Object)});
+```
+
+```csharp
+toJsonMethodInfo.Invoke(null, new object[]{ myJson});
+```
