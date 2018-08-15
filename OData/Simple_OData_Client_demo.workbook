@@ -1,0 +1,80 @@
+---
+uti: com.xamarin.workbook
+id: 9cc5cdc1-8de8-4688-a898-165758f815ee
+title: Simple_OData_Client_demo
+platforms:
+- DotNetCore
+packages:
+- id: Simple.OData.V4.Client
+  version: 5.4.0
+---
+
+```csharp
+#r "Simple.OData.Client.Core"
+#r "Simple.OData.Client.Dynamic"
+#r "Simple.OData.Client.V4.Adapter"
+```
+
+Simple.OData.Client: \
+[https://github.com/object/Simple.OData.Client/wiki/Getting-started-with-Simple.OData.Client](https://github.com/object/Simple.OData.Client/wiki/Getting-started-with-Simple.OData.Client "tutorial")
+
+```csharp
+using Simple.OData.Client;
+```
+
+```csharp
+var client = new ODataClient("https://localhost:5001/odata");
+```
+
+```csharp
+var books = await client.FindEntriesAsync("Books?$filter=Title eq 'Enterprise Games'&$expand=Press");
+```
+
+```csharp
+foreach(var book in books)
+{
+    Console.WriteLine(book.GetType());
+    foreach(var kvp in book)
+    {
+        Console.WriteLine("key={0}, value={1}",kvp.Key, kvp.Value);
+    }
+}
+```
+
+```csharp
+public class Address
+    {
+        public string City { get; set; }
+        public string Street { get; set; }
+    }
+
+public enum Category
+    {
+        Book,
+        Magazine,
+        EBook
+    }
+
+public class Press
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public Category Category { get; set; }
+    }
+
+public class Book
+    {
+        public int Id { get; set; }
+        public string ISBN { get; set; }
+        public string Title { get; set; }
+        public string Author { get; set; }
+        public decimal Price { get; set; }
+        public Address Location { get; set; }
+        public Press Press { get; set; }
+    }
+```
+
+```csharp
+var typedBooks = await client.For<Book>().Filter(x => x.Title == "Essential C#5.0").FindEntriesAsync();
+```

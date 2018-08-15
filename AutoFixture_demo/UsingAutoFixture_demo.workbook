@@ -1,0 +1,57 @@
+---
+uti: com.xamarin.workbook
+id: 9c43daae-9595-4b34-9fa4-b1f9ef2bba75
+title: UsingAutoFixture_demo
+platforms:
+- DotNetCore
+packages:
+- id: AutoFixture
+  version: 4.5.0
+---
+
+```csharp
+#r "AutoFixture"
+```
+
+```csharp
+class BaseClass{
+
+    public int TheInt { get; set;}
+    
+    public override string ToString()
+    {
+        return "This is Base";
+    }
+}
+class MockClass : BaseClass{
+    
+    public string TheStr {get; set;}
+    
+    public override string ToString()
+    {
+        return "This is Mock";
+    }
+}
+```
+
+```csharp
+using AutoFixture;
+var fixture = new Fixture();
+```
+
+```csharp
+var genClass = fixture.Create<MockClass>();
+genClass.ToString();
+```
+
+```csharp
+fixture.Register<BaseClass>( () => new MockClass());
+```
+
+```csharp
+var newObj = fixture.Create<BaseClass>();
+```
+
+```csharp
+var mc = fixture.Build<MockClass>().With( x => x.TheInt, 123).Create();
+```
