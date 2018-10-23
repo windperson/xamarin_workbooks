@@ -1,0 +1,70 @@
+---
+uti: com.xamarin.workbook
+id: 6ab4f85c-f6a9-4169-b3c6-7c453efec217
+title: Coordinate_mapping
+platforms:
+- DotNetCore
+packages:
+- id: ProjNET4GeoAPI
+  version: 1.4.1
+---
+
+```csharp
+#r "ProjNET"
+using ProjNet.CoordinateSystems;
+using GeoAPI.CoordinateSystems;
+```
+
+```csharp
+const double curlon = 121.5750212, curlat = 25.0783615;
+```
+
+```csharp
+var csFactory = new CoordinateSystemFactory();
+```
+
+```csharp
+var shiftProjParms = new List<ProjectionParameter>{ 
+    new ProjectionParameter("latitude_of_origin", curlat),
+    new ProjectionParameter("central_meridian", curlon),
+    new ProjectionParameter("false_easting", 0),
+    new ProjectionParameter("false_northing", 0)
+    };
+```
+
+```csharp
+var projection = csFactory.CreateProjection("Mercator_1SP", "Mercator", shiftProjParms);
+```
+
+```csharp
+var myProjCoordSys = csFactory.CreateProjectedCoordinateSystem("My WGS84",GeographicCoordinateSystem.WGS84, projection, LinearUnit.Metre, new AxisInfo("E", AxisOrientationEnum.East),new AxisInfo("N", AxisOrientationEnum.North));
+```
+
+```csharp
+var ctFactory = new ProjNet.CoordinateSystems.Transformations.CoordinateTransformationFactory();
+```
+
+```csharp
+var transform = ctFactory.CreateFromCoordinateSystems(GeographicCoordinateSystem.WGS84, myProjCoordSys);
+```
+
+```csharp
+var fromData = new double[]{ curlon, curlat};
+var toData = transform.MathTransform.Transform(fromData);
+var shift = toData[1] * -1;
+var origin = (toData[0], toData[1] + shift);
+```
+
+```csharp
+var verifyData = (Lat: 25.0806617,Lon: 121.5749139);
+var rawResult = transform.MathTransform.Transform(new double[]{verifyData.Lon,verifyData.Lat});
+var result = (Lat: rawResult[1] + shift, Lon: rawResult[0]);
+```
+
+```csharp
+var inverseTransform = ctFactory.CreateFromCoordinateSystems(myProjCoordSys, GeographicCoordinateSystem.WGS84);
+```
+
+```csharp
+var backData = inverseTransform.MathTransform.Transform(rawResult);
+```

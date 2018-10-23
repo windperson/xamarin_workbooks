@@ -1,0 +1,47 @@
+---
+uti: com.xamarin.workbook
+id: 582aa33c-a746-404c-8755-8f0038d39e6b
+title: Resize_demo
+platforms:
+- DotNetCore
+packages:
+- id: SixLabors.ImageSharp
+  version: 1.0.0-beta0005
+---
+
+```csharp
+#r "SixLabors.ImageSharp"
+using SixLabors.ImageSharp;
+```
+
+```csharp
+var image = SixLabors.ImageSharp.Image.Load("k8s_arch.png");
+```
+
+```csharp
+image.Width;
+```
+
+```csharp
+image.Height;
+```
+
+```csharp
+using SixLabors.ImageSharp.Processing;
+```
+
+```csharp
+var newImage =  image.Clone(ctx => ctx.Resize(image.Width/2, image.Height/2));
+```
+
+```csharp
+newImage.Width;
+```
+
+```csharp
+newImage.Height;
+```
+
+```csharp
+newImage.Save("output.jpg", new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder());
+```
