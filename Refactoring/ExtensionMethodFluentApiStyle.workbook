@@ -1,0 +1,51 @@
+---
+uti: com.xamarin.workbook
+id: acc9fc87-a2e2-4c00-b9c0-1d8c1b97f615
+title: ExtensionMethodFluentApiStyle
+platforms:
+- DotNetCore
+---
+
+A class has many properties, and we want to only modify certain properties in initialization:
+
+```csharp
+public class Subject{
+   public string A {get;set;}
+   public string B {get;set;}
+   public string C {get;set;}
+   public string D {get;set;}
+   public string E {get;set;}
+   public string F {get;set;}
+   public string G {get;set;}
+   public Subject()
+   {
+        A = "11";
+        B = "11";
+        C = "11";
+        D = "11";
+        E = "11";
+        F = "11";
+        G = "11";
+   }
+}
+```
+
+Create a [C# Extension Method ](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods "C# extension method")that accept an action:
+
+```csharp
+//Note: in Xamarin Workbooks, extension method must be declared at top scope:
+// https://stackoverflow.com/questions/46603343/extension-methods-in-xamarin-workbooks
+public static Subject Build(this Subject input, Action<Subject> action)
+{
+    action(input);
+    return input;
+}
+```
+
+Invoke like Fluent API with custom action method:
+
+```csharp
+new Subject()
+.Build( o => { o.B = "Fluent API"; o.G ="modified";})
+.Build( o2 => { o2.C = "style"; o2.D = "invocation";});
+```

@@ -1,0 +1,42 @@
+---
+uti: com.xamarin.workbook
+id: 544a8ff9-4b32-4c9a-ada4-9840be1ade2e
+title: PurlyUseConfigDemo
+platforms:
+- DotNetCore
+packages:
+- id: Microsoft.Extensions.Configuration.Json
+  version: 2.1.1
+---
+
+```csharp
+#r "Microsoft.Extensions.Configuration.Json"
+```
+
+```csharp
+using Microsoft.Extensions.Configuration;
+using System.IO;
+```
+
+```csharp
+var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "config.json");
+```
+
+```csharp
+var configuration = new ConfigurationBuilder().AddJsonFile(jsonPath).Build();
+```
+
+```csharp
+configuration["foo"]
+```
+
+```csharp
+configuration["baz:bar"]
+```
+
+```csharp
+foreach(var entry in configuration.AsEnumerable())
+{
+    Console.WriteLine($"{entry.Key} => {entry.Value}");
+}
+```
