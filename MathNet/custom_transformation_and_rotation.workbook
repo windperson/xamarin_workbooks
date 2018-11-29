@@ -1,0 +1,41 @@
+---
+uti: com.xamarin.workbook
+id: 4ed46180-5131-4be3-b0c3-383ed54a7015
+title: custom_transformation_and_rotation
+platforms:
+- DotNetCore
+packages:
+- id: MathNet.Spatial
+  version: 0.5.0-beta04
+---
+
+Use Math.NET Spactial ([http://spatial.mathdotnet.com](http://spatial.mathdotnet.com "Math.NET Spatial")) to apply cooridnate point transformation and rotation.
+
+```csharp
+#r "MathNet.Spatial"
+```
+
+```csharp
+using MathNet.Spatial.Units;
+using MathNet.Spatial.Euclidean;
+```
+
+```csharp
+var transformMatrix = Matrix2D.Create(1.5, 0.0, 0.0, 1.5);
+```
+
+```csharp
+var pointA = new Point2D(1,1);
+```
+
+```csharp
+pointA.TransformBy(transformMatrix);
+```
+
+```csharp
+var rotationMatrix = Matrix2D.Rotation(Angle.FromDegrees(90));
+```
+
+```csharp
+pointA.TransformBy(rotationMatrix);
+```
