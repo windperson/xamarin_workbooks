@@ -56,9 +56,9 @@ var origin = (toData[0], toData[1] + shift);
 ```
 
 ```csharp
-var verifyData = (Lat: 25.0806617,Lon: 121.5749139);
+var verifyData = (Lon: 121.5749139, Lat: 25.0806617);
 var rawResult = transform.MathTransform.Transform(new double[]{verifyData.Lon,verifyData.Lat});
-var result = (Lat: rawResult[1] + shift, Lon: rawResult[0]);
+var result = (X: rawResult[0], Y: rawResult[1] + shift);
 ```
 
 ```csharp
