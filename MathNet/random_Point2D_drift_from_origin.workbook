@@ -1,0 +1,41 @@
+---
+uti: com.xamarin.workbook
+id: b19cc602-63b3-4aa2-b733-2166da6b3ce4
+title: random_Point2D_drift_from_origin
+platforms:
+- DotNetCore
+packages:
+- id: MathNet.Spatial
+  version: 0.5.0-beta04
+---
+
+```csharp
+#r "MathNet.Spatial"
+```
+
+```csharp
+using MathNet.Spatial.Units;
+using MathNet.Spatial.Euclidean;
+using MathNet.Numerics.Random;
+using MathNet.Numerics.Distributions;
+```
+
+```csharp
+var angleRng = new SystemRandomSource(RandomSeed.Guid(), true);
+```
+
+```csharp
+var radiusRng = new SystemRandomSource(RandomSeed.Guid(), true);
+```
+
+```csharp
+var angle = Angle.FromDegrees(angleRng.NextDouble()*360);
+```
+
+```csharp
+var radius = radiusRng.NextDouble()*100;
+```
+
+```csharp
+var randomPoint = Point2D.FromPolar(radius, angle);
+```
