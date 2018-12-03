@@ -1,0 +1,30 @@
+---
+uti: com.xamarin.workbook
+id: 7cee1dea-2b8e-4d03-9216-a6805517f314
+title: random_pick_item_in_list
+platforms:
+- DotNetCore
+packages:
+- id: MathNet.Numerics
+  version: 4.7.0
+---
+
+```csharp
+#r "MathNet.Numerics"
+```
+
+```csharp
+using MathNet.Numerics.Random;
+```
+
+```csharp
+var rng = new SystemRandomSource(RandomSeed.Guid(),true);
+```
+
+```csharp
+var source = new [] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+```
+
+```csharp
+var random = source.OrderBy(x => rng.Next()).Take(5);
+```

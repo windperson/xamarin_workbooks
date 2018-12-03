@@ -1,0 +1,31 @@
+---
+uti: com.xamarin.workbook
+id: 6595327b-d6fb-4bf6-8bc4-5d6d382851ae
+title: proportion_random
+platforms:
+- DotNetCore
+packages:
+- id: MathNet.Numerics
+  version: 4.7.0
+---
+
+```csharp
+#r "MathNet.Numerics"
+```
+
+```csharp
+using MathNet.Numerics.Distributions;
+using MathNet.Numerics.Random;
+```
+
+```csharp
+var rng = new SystemRandomSource(RandomSeed.Guid(),true);
+```
+
+```csharp
+var categorical = new Categorical(new []{10.1, 20.9, 50, 10, 5}, rng);
+```
+
+```csharp
+categorical.Sample();
+```
