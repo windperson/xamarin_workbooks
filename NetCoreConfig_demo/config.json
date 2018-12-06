@@ -2,5 +2,15 @@
     "foo": "bar",
     "baz": {
         "bar": "qux"
+    },
+    "TheTypedConfig" :{
+        "PropA" : "A string",
+        "PropB" : 12345,
+        "PropC" : 789.012,
+        "PropD" : {
+            "key1" : "Value1",
+            "key2" : "Value2"
+        },
+        "PropE" : [ "item A", "item B" , "item C"]
     }
 }

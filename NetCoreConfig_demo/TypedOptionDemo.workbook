@@ -1,0 +1,64 @@
+---
+uti: com.xamarin.workbook
+id: 29841681-57ba-45fc-9a05-b222890480a9
+title: TypedOptionDemo
+platforms:
+- DotNetCore
+packages:
+- id: Microsoft.Extensions.Configuration.Binder
+  version: 2.2.0
+- id: Microsoft.Extensions.Configuration.Json
+  version: 2.2.0
+---
+
+```csharp
+#r "Microsoft.Extensions.Configuration.Json"
+```
+
+```csharp
+using Microsoft.Extensions.Configuration;
+using System.IO;
+```
+
+```csharp
+var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "config.json");
+var theConfiguration = new ConfigurationBuilder().AddJsonFile(jsonPath).Build();
+```
+
+```csharp
+foreach(var entry in theConfiguration.AsEnumerable())
+{
+    Console.WriteLine($"{entry.Key} => {entry.Value}");
+}
+```
+
+```csharp
+class MyTypedOption {
+    public string PropA { get; set; }
+    public int PropB { get; set; }
+    public double PropC { get; set; }
+    public Dictionary<string, string> PropD { get; set;}
+    public string[] PropE { get; set;}
+}
+```
+
+```csharp
+var optionConfiguration = theConfiguration.GetSection("TheTypedConfig");
+```
+
+```csharp
+#r "Microsoft.Extensions.Configuration.Binder"
+```
+
+```csharp
+var myTypedOption = optionConfiguration.Get<MyTypedOption>();
+```
+
+```csharp
+#r "Newtonsoft.Json"
+```
+
+```csharp
+using Newtonsoft.Json;
+JsonConvert.SerializeObject(myTypedOption, Formatting.Indented);
+```
