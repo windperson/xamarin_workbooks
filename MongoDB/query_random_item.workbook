@@ -1,0 +1,52 @@
+---
+uti: com.xamarin.workbook
+id: 1de74993-08c4-4318-80cf-378d940e17bc
+title: query_random_item
+platforms:
+- DotNetCore
+packages:
+- id: MongoDB.Bson
+  version: 2.7.2
+- id: MongoDB.Driver
+  version: 2.7.2
+---
+
+```csharp
+#r "MongoDB.Bson"
+#r "MongoDB.Driver"
+using MongoDB.Bson;
+using MongoDB.Driver;
+```
+
+```csharp
+var client = new MongoClient(@"mongodb://localhost:27017");
+```
+
+```csharp
+var geo_points_database = client.GetDatabase("geo-points");
+var base_poi_collection = geo_points_database.GetCollection<MongoDB.Bson.BsonDocument>("base_poi");
+```
+
+```csharp
+var randomArg = new BsonDocument{{"$sample",new BsonDocument{{"size",1}}}};
+```
+
+```csharp
+using MongoDB.Bson.Serialization.Attributes;
+class Location{
+    [BsonElement("coordinates")]
+    public double[] Coordinates {get;set;}
+    [BsonElement("type")]
+    public string Type {get;set;}
+}
+class BasePoi{
+    public ObjectId Id {get;set;}
+    public string Name {get;set;}
+    public Location Location {get;set;}
+    public int SupplyType {get;set;}
+}
+```
+
+```csharp
+var result = await base_poi_collection.Aggregate<BasePoi>(new[]{randomArg}).FirstOrDefaultAsync();
+```

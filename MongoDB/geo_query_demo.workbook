@@ -1,0 +1,66 @@
+---
+uti: com.xamarin.workbook
+id: 15fb8352-0cfd-4a91-8611-c6356612675f
+title: geo_query_demo
+platforms:
+- DotNetCore
+packages:
+- id: MongoDB.Bson
+  version: 2.7.2
+- id: MongoDB.Driver
+  version: 2.7.2
+---
+
+```csharp
+#r "MongoDB.Bson"
+#r "MongoDB.Driver"
+using MongoDB.Bson;
+using MongoDB.Driver;
+```
+
+```csharp
+var client = new MongoClient(@"mongodb://localhost:27017");
+```
+
+```csharp
+var geo_points_database = client.GetDatabase("geo-points");
+```
+
+```csharp
+using MongoDB.Bson.Serialization.Attributes;
+class Location{
+    [BsonElement("coordinates")]
+    public double[] Coordinates {get;set;}
+    [BsonElement("type")]
+    public string Type {get;set;}
+}
+class BasePoi{
+    public ObjectId Id {get;set;}
+    public string Name {get;set;}
+    public Location Location {get;set;}
+    public int SupplyType {get;set;}
+}
+```
+
+```csharp
+var base_poi_collection = geo_points_database.GetCollection<BasePoi>("base_poi");
+```
+
+```csharp
+var total_base_poi_count = await base_poi_collection.CountDocumentsAsync(new BsonDocument());
+```
+
+```csharp
+// NOTE: besure to create the "2d Sphere" index on GeoJson Field.
+base_poi_collection.Indexes.CreateOne( new CreateIndexModel<BasePoi>(Builders<BasePoi>.IndexKeys.Geo2DSphere("Location")));
+```
+
+```csharp
+using  MongoDB.Driver.GeoJsonObjectModel;
+var current_point = new GeoJsonPoint<GeoJson2DGeographicCoordinates>(new GeoJson2DGeographicCoordinates(121.5737079,25.0788567));
+var geoFilter = Builders<BasePoi>.Filter.NearSphere("Location", current_point, 100, 80);
+```
+
+```csharp
+var matched_pois = base_poi_collection.Find(geoFilter).ToList();
+```
