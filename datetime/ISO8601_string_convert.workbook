@@ -1,0 +1,92 @@
+---
+uti: com.xamarin.workbook
+id: 41a9dc5a-3b7f-423d-afc5-30a30ce5d972
+title: ISO8601_string_convert
+platforms:
+- DotNetCore
+---
+
+```csharp
+const string ISO8601format = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffK";
+var now = DateTime.UtcNow;
+```
+
+```csharp
+var nowUtcStr = now.ToString(ISO8601format);
+```
+
+```csharp
+var nowStr = now.ToLocalTime().ToString(ISO8601format);
+```
+
+```csharp
+DateTimeOffset ParseIso8601(string iso8601String)
+{
+    return DateTimeOffset.ParseExact(
+        iso8601String,
+        new string[] { ISO8601format },
+        System.Globalization.CultureInfo.InvariantCulture,
+        System.Globalization.DateTimeStyles.None);
+}
+```
+
+```csharp
+var convertedNow = ParseIso8601(nowUtcStr).DateTime;
+```
+
+DateTime.Compare() will not to be equal because lost decimal friction of seconds
+
+```csharp
+DateTime.Compare(now, convertedNow);
+```
+
+Datetime comparor wrapper
+
+```csharp
+public class DateTimeComparator : Comparer<DateTime>
+{
+    private Prescision _Prescision;
+    public enum Prescision
+    {
+        Milliseconds = 1,
+        Seconds,
+        Minutes,
+        Hour,
+        Day,
+        Month,
+        Year,
+        Ticks
+    }
+    Func<DateTime, DateTime>[] roundTimeActions = new Func<DateTime, DateTime>[]
+    {
+        (x) => { return x.AddMilliseconds(-x.Millisecond);},
+        (x) => { return x.AddSeconds(-x.Second);},
+        (x) => { return x.AddMinutes(-x.Minute);},
+        (x) => { return x.AddHours(-x.Hour);},
+        (x) => { return x.AddDays(-x.Day);},
+        (x) => { return x.AddMonths(-x.Month);},
+        (x) => { return x.AddYears(-x.Year);}
+    };
+    public DateTimeComparator(Prescision prescision = Prescision.Ticks)
+    {
+        _Prescision = prescision;
+    }
+    public override int Compare(DateTime x, DateTime y)
+    {
+        if (_Prescision == Prescision.Ticks)
+        {
+            return x.CompareTo(y);
+        }
+        for (var i = _Prescision - 1; i >= 0; i--)
+        {
+            x = roundTimeActions[(int)i](x);
+            y = roundTimeActions[(int)i](y);
+        }
+        return x.CompareTo(y);
+    }
+}
+```
+
+```csharp
+new DateTimeComparator(DateTimeComparator.Prescision.Minutes).Compare(now,convertedNow)
+```
