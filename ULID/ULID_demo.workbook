@@ -1,0 +1,43 @@
+---
+uti: com.xamarin.workbook
+id: 24827557-eed9-4ecc-b4fc-2f0a034ce39c
+title: ULID_demo
+platforms:
+- DotNetCore
+packages:
+- id: NUlid
+  version: 1.3.2
+---
+
+```csharp
+#r "NUlid"
+using NUlid;
+```
+
+```csharp
+var myulid = Ulid.NewUlid();
+```
+
+```csharp
+var now = DateTime.Now;
+```
+
+```csharp
+DateTimeOffset theDateTimeOffset = new DateTimeOffset(now);
+```
+
+```csharp
+var ulid1 = Ulid.NewUlid(theDateTimeOffset);
+```
+
+```csharp
+var recorded_time1 = ulid1.Time;
+```
+
+```csharp
+var ulid2 = Ulid.NewUlid(theDateTimeOffset);
+```
+
+```csharp
+var recored_time2 = ulid2.Time;
+```
