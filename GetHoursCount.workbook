@@ -1,0 +1,40 @@
+---
+uti: com.xamarin.workbook
+id: 349f372f-b9ac-41eb-b662-13088c21fce2
+title: GetHoursCount
+platforms:
+- DotNetCore
+---
+
+```csharp
+var from = DateTime.Now;
+```
+
+```csharp
+var to  = from.Add(TimeSpan.FromHours(+12)+TimeSpan.FromMinutes(-5));
+```
+
+```csharp
+static DateTime GetOnTheHour(this DateTime input) {
+    return new DateTime(input.Year, input.Month, input.Day, input.Hour, 0, 0);
+}
+```
+
+```csharp
+var actualFrom = from.GetOnTheHour();
+```
+
+```csharp
+var actualTo = to.GetOnTheHour();
+```
+
+```csharp
+double TotalHours (DateTime from , DateTime to) {
+    var diff = to - from;
+    return diff.Hours;
+}
+```
+
+```csharp
+var hours = TotalHours(actualFrom, actualTo);
+```
