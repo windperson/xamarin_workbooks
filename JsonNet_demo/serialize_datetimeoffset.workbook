@@ -55,3 +55,11 @@ var test2 = new TestDto{
 ```csharp
 var test2JsonStr = JsonConvert.SerializeObject(test2);
 ```
+
+```csharp
+var deserializedTest1 = JsonConvert.DeserializeObject<TestDto>(test1JsonStr);
+```
+
+```csharp
+var deserializedTest2 = JsonConvert.DeserializeObject<TestDto>(test2JsonStr);
+```
