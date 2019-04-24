@@ -1,0 +1,38 @@
+---
+uti: com.xamarin.workbook
+id: 94be100d-e18c-439a-a9fd-f1937b3f7ac8
+title: NodaTime_demo
+platforms:
+- DotNetCore
+packages:
+- id: NodaTime
+  version: 2.4.5
+---
+
+```csharp
+#r "NodaTime"
+```
+
+```csharp
+var timeZoneName = "Asia/Taipei"
+```
+
+```csharp
+var localNow = DateTime.Now;
+```
+
+```csharp
+var timeZone = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(timeZoneName);
+```
+
+```csharp
+var localDateTime = NodaTime.LocalDateTime.FromDateTime(localNow);
+```
+
+```csharp
+var zonedDateTime = timeZone.AtStrictly(localDateTime);
+```
+
+```csharp
+zonedDateTime.ToDateTimeUtc();
+```
