@@ -1,0 +1,37 @@
+---
+uti: com.xamarin.workbook
+id: a0207f1c-ff34-48f0-9210-c90cedfc5844
+title: LinkedList_sort
+platforms:
+- DotNetCore
+---
+
+```csharp
+var linkedList = new LinkedList<int>();
+```
+
+```csharp
+string DumpList(LinkedList<int> input){
+    var sep = ",";
+    return input.Select(i=>i.ToString()).Aggregate((s1, s2) => $"{s1}{sep} {s2}");
+}
+```
+
+```csharp
+linkedList.AddLast(1);
+linkedList.AddLast(3);
+linkedList.AddLast(5);
+linkedList.AddLast(3);
+```
+
+```csharp
+DumpList(linkedList);
+```
+
+```csharp
+var sortedList = new LinkedList<int>(linkedList.OrderByDescending(i=>i));
+```
+
+```csharp
+DumpList(sortedList);
+```

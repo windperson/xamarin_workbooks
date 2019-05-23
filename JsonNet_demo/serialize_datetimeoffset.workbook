@@ -1,0 +1,65 @@
+---
+uti: com.xamarin.workbook
+id: 77508838-7bfd-485d-a8f9-9d3b02b4c554
+title: serialize_datetimeoffset
+platforms:
+- DotNetCore
+packages:
+- id: Newtonsoft.Json
+  version: 12.0.1
+---
+
+```csharp
+#r "Newtonsoft.Json"
+using Newtonsoft.Json;
+```
+
+Use `DateTimeOffset` because of:
+
+* [https://stackoverflow.com/a/14268167](https://stackoverflow.com/a/14268167 "DateTime vs DateTimeOffset")
+
+* [https://stackoverflow.com/a/2532962](https://stackoverflow.com/a/2532962 "Daylight saving time and time zone best practices")
+
+```csharp
+public class TestDto {
+    public string Message {get; set;}
+    public DateTimeOffset logTime {get; set;}
+}
+```
+
+```csharp
+var test1 = new TestDto{ Message = "This is test1", logTime = DateTimeOffset.Now};
+```
+
+```csharp
+var test1JsonStr = JsonConvert.SerializeObject(test1);
+```
+
+Create a different TimeZone DateTime object, Time zone name can look up at: [https://stackoverflow.com/a/24460750](https://stackoverflow.com/a/24460750 "Time Zone Name")
+
+```csharp
+const string TimeZoneName = "Tokyo Standard Time";
+DateTime test2DateTime = DateTime.UtcNow;
+test2DateTime = TimeZoneInfo.ConvertTimeFromUtc(test2DateTime, TimeZoneInfo.FindSystemTimeZoneById(TimeZoneName));
+```
+
+```csharp
+DateTimeOffset test2DateTimeOffset = new DateTimeOffset(test2DateTime, TimeZoneInfo.FindSystemTimeZoneById(TimeZoneName).GetUtcOffset(test2DateTime));
+
+var test2 = new TestDto{
+    Message = "This is test2",
+    logTime = test2DateTimeOffset
+}
+```
+
+```csharp
+var test2JsonStr = JsonConvert.SerializeObject(test2);
+```
+
+```csharp
+var deserializedTest1 = JsonConvert.DeserializeObject<TestDto>(test1JsonStr);
+```
+
+```csharp
+var deserializedTest2 = JsonConvert.DeserializeObject<TestDto>(test2JsonStr);
+```

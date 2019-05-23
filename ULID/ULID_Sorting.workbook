@@ -1,0 +1,60 @@
+---
+uti: com.xamarin.workbook
+id: 19ffb752-58f2-49ee-add6-4e9d7e247043
+title: ULID_Sorting
+platforms:
+- DotNetCore
+packages:
+- id: NUlid
+  version: 1.3.2
+---
+
+```csharp
+#r "NUlid"
+```
+
+```csharp
+var id1 = NUlid.Ulid.Parse("01D6AKNN3HPXFC7QSWK9PDMEQY")
+```
+
+```csharp
+id1.Time;
+```
+
+```csharp
+var now = DateTime.Now;
+```
+
+```csharp
+var id2 = NUlid.Ulid.NewUlid(now);
+```
+
+```csharp
+var id3 = NUlid.Ulid.NewUlid(now);
+```
+
+```csharp
+var id4 = NUlid.Ulid.NewUlid(now);
+```
+
+```csharp
+class Rank {
+    public string Id {get;set;}
+    public long Score {get;set;}
+    public NUlid.Ulid Ulid {get;set;}
+}
+```
+
+```csharp
+var id_list = new List<Rank> { 
+    new Rank{ Id = "id4", Score = 10, Ulid = id4}, 
+    new Rank{ Id = "id2", Score = 100, Ulid = id2},
+    new Rank{ Id = "id1", Score = 10, Ulid = id1},
+    new Rank{ Id = "id3", Score = 10, Ulid = id3}, 
+};
+```
+
+```csharp
+id_list.OrderByDescending( x => x.Score ).Take(3)
+.OrderByDescending( x => x.Score).ThenBy(x => x.Ulid).ToList();
+```

@@ -31,13 +31,13 @@ DateTimeOffset ParseIso8601(string iso8601String)
 ```
 
 ```csharp
-var convertedNow = ParseIso8601(nowUtcStr).DateTime;
+var convertedUtcNow = ParseIso8601(nowUtcStr).DateTime;
 ```
 
 DateTime.Compare() will not to be equal because lost decimal friction of seconds
 
 ```csharp
-DateTime.Compare(now, convertedNow);
+DateTime.Compare(now, convertedUtcNow);
 ```
 
 Datetime comparor wrapper
@@ -48,7 +48,7 @@ public class DateTimeComparator : Comparer<DateTime>
     private Prescision _Prescision;
     public enum Prescision
     {
-        Milliseconds = 1,
+        Milliseconds,
         Seconds,
         Minutes,
         Hour,
