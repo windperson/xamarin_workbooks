@@ -1,0 +1,68 @@
+---
+uti: com.xamarin.workbook
+id: 700444aa-7bc4-4841-9d8d-27f6f9581e40
+title: ttl_demo
+platforms:
+- DotNetCore
+packages:
+- id: MongoDB.Bson
+  version: 2.8.1
+- id: MongoDB.Driver
+  version: 2.8.1
+---
+
+```csharp
+#r "MongoDB.Bson"
+#r "MongoDB.Driver"
+using MongoDB.Bson;
+using MongoDB.Driver;
+```
+
+```csharp
+var client = new MongoClient(@"mongodb://localhost:27017");
+```
+
+```csharp
+var db = client.GetDatabase("my_test");
+```
+
+```csharp
+using MongoDB.Bson.Serialization.Attributes;
+class SimpleLRU {
+    public ObjectId Id { get; set; }
+    public string PlayerId {get;set;}
+    public string CachedValue {get;set;}
+    [BsonElement("beginAt")]
+    public DateTime BeginTime { get; set; }
+}
+```
+
+```csharp
+var lruCollection = db.GetCollection<SimpleLRU>("Test_TTL");
+```
+
+```csharp
+lruCollection.Indexes.CreateOne(new CreateIndexModel<SimpleLRU>(Builders<SimpleLRU>.IndexKeys.Ascending("beginAt"),new CreateIndexOptions { ExpireAfter = new TimeSpan(0, 0, 60) }));
+```
+
+```csharp
+var player1 = new SimpleLRU{ PlayerId = "test1", CachedValue = "cache value 1"};
+var player2 = new SimpleLRU{ PlayerId = "test2", CachedValue = "cache value 2"};
+var player3 = new SimpleLRU{ PlayerId = "test3", CachedValue = "cache value 3"};
+```
+
+```csharp
+player1.BeginTime = DateTime.UtcNow;
+await lruCollection.InsertOneAsync(player1);
+Console.WriteLine("Player1 inserted");
+
+await Task.Delay(new TimeSpan(0,0,30));
+player2.BeginTime = DateTime.UtcNow;
+await lruCollection.InsertOneAsync(player2);
+Console.WriteLine("Player2 inserted");
+
+await Task.Delay(new TimeSpan(0,0,30));
+player3.BeginTime = DateTime.UtcNow;
+await lruCollection.InsertOneAsync(player3);
+Console.WriteLine("Player3 inserted");
+```
