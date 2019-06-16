@@ -9,15 +9,29 @@ packages:
   version: 2.2.0
 - id: Microsoft.Extensions.Configuration.Json
   version: 2.2.0
+- id: Microsoft.Extensions.DependencyInjection
+  version: 2.2.0
+- id: Microsoft.Extensions.Options
+  version: 2.2.0
+- id: Microsoft.Extensions.Options.ConfigurationExtensions
+  version: 2.2.0
 ---
 
 ```csharp
+#r "Newtonsoft.Json"
+#r "Microsoft.Extensions.Configuration.Binder"
 #r "Microsoft.Extensions.Configuration.Json"
+#r "Microsoft.Extensions.DependencyInjection"
+#r "Microsoft.Extensions.Options"
+#r "Microsoft.Extensions.Options.ConfigurationExtensions"
 ```
 
 ```csharp
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System.IO;
+using Newtonsoft.Json;
 ```
 
 ```csharp
@@ -47,18 +61,41 @@ var optionConfiguration = theConfiguration.GetSection("TheTypedConfig");
 ```
 
 ```csharp
-#r "Microsoft.Extensions.Configuration.Binder"
-```
-
-```csharp
 var myTypedOption = optionConfiguration.Get<MyTypedOption>();
 ```
 
 ```csharp
-#r "Newtonsoft.Json"
+JsonConvert.SerializeObject(myTypedOption, Formatting.Indented);
 ```
 
 ```csharp
-using Newtonsoft.Json;
-JsonConvert.SerializeObject(myTypedOption, Formatting.Indented);
+class ConfItem {
+    public string PropKey {get;set;}
+    public int Value {get;set;}
+}
+var arrayConfiguration = theConfiguration.GetSection("TheCollecitonConfig");
+```
+
+```csharp
+List<ConfItem> listTypedOption = arrayConfiguration.Get<List<ConfItem>>();
+```
+
+```csharp
+var serviceCollection = new ServiceCollection();
+```
+
+```csharp
+serviceCollection.Configure<MyTypedOption>(optionConfiguration);
+serviceCollection.Configure<List<ConfItem>>(arrayConfiguration);
+var di_container = serviceCollection.BuildServiceProvider();
+```
+
+```csharp
+var myTypedOptionMonitor = di_container.GetService<IOptionsMonitor<MyTypedOption>>();
+var realTypedOption = myTypedOptionMonitor.CurrentValue;
+```
+
+```csharp
+var confItemListOptionMonitor = di_container.GetService<IOptionsMonitor<List<ConfItem>>>();
+var confItemList = confItemListOptionMonitor.CurrentValue;
 ```

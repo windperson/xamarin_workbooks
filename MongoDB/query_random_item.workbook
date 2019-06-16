@@ -32,6 +32,19 @@ var randomArg = new BsonDocument{{"$sample",new BsonDocument{{"size",1}}}};
 ```
 
 ```csharp
+var notExistLastAccessField = new BsonDocument{{"LastAccess", new BsonDocument{{"$exists", false}}}};
+```
+
+```csharp
+var utcNow = DateTime.UtcNow.Date;
+var elderLastAccessField = new BsonDocument{{"LastAccess", new BsonDocument{{"$lt",utcNow}}}};
+```
+
+```csharp
+var notUsedOrElder = new BsonDocument{{"$match", new BsonDocument{{"$or", new BsonArray( new []{notExistLastAccessField, elderLastAccessField})}}}};
+```
+
+```csharp
 using MongoDB.Bson.Serialization.Attributes;
 class Location{
     [BsonElement("coordinates")]
@@ -42,11 +55,13 @@ class Location{
 class BasePoi{
     public ObjectId Id {get;set;}
     public string Name {get;set;}
+    public string Region {get;set;}
     public Location Location {get;set;}
     public int SupplyType {get;set;}
+    public DateTime? LastAccess { get; set; }
 }
 ```
 
 ```csharp
-var result = await base_poi_collection.Aggregate<BasePoi>(new[]{randomArg}).FirstOrDefaultAsync();
+var result = await base_poi_collection.Aggregate<BasePoi>(new[]{notUsedOrElder}).FirstOrDefaultAsync();
 ```

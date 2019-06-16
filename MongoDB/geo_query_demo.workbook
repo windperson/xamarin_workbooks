@@ -39,6 +39,7 @@ class BasePoi{
     public string Name {get;set;}
     public Location Location {get;set;}
     public int SupplyType {get;set;}
+    public DateTime? LastAccess {get;set;}
 }
 ```
 
@@ -58,9 +59,9 @@ base_poi_collection.Indexes.CreateOne( new CreateIndexModel<BasePoi>(Builders<Ba
 ```csharp
 using  MongoDB.Driver.GeoJsonObjectModel;
 var current_point = new GeoJsonPoint<GeoJson2DGeographicCoordinates>(new GeoJson2DGeographicCoordinates(121.5737079,25.0788567));
-var geoFilter = Builders<BasePoi>.Filter.NearSphere("Location", current_point, 100, 80);
+var geoFilter = Builders<BasePoi>.Filter.NearSphere("Location", current_point, 100, 0);
 ```
 
 ```csharp
-var matched_pois = base_poi_collection.Find(geoFilter).ToList();
+var matched_pois = base_poi_collection.Find(geoFilter).ToEnumerable().Take(10);
 ```

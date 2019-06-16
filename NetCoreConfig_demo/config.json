@@ -12,5 +12,10 @@
             "key2" : "Value2"
         },
         "PropE" : [ "item A", "item B" , "item C"]
-    }
+    },
+    "TheCollecitonConfig": [
+        { "PropKey": "myKey1", "value": 123},
+        { "PropKey": "myKey2", "value": 456},
+        { "PropKey": "myKey3", "value": 789}
+    ]
 }

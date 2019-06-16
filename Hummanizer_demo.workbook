@@ -1,0 +1,38 @@
+---
+uti: com.xamarin.workbook
+id: 5f22b9a8-0d11-4bbd-9f61-1ea89ecb6d61
+title: Hummanizer_demo
+platforms:
+- DotNetCore
+packages:
+- id: Humanizer
+  version: 2.6.2
+---
+
+```csharp
+#r "Humanizer"
+using Humanizer;
+```
+
+```csharp
+"HumanizerIsAwesome".Humanize(LetterCasing.AllCaps);
+```
+
+```csharp
+"Long text to truncate".Truncate(10);
+```
+
+```csharp
+using System.ComponentModel;
+public enum EnumUnderTest
+{
+    [Description("Custom description")]
+    MemberWithDescriptionAttribute,
+    MemberWithoutDescriptionAttribute,
+    ALLCAPITALS
+}
+```
+
+```csharp
+EnumUnderTest.MemberWithDescriptionAttribute.Humanize();
+```

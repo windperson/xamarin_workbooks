@@ -1,0 +1,60 @@
+---
+uti: com.xamarin.workbook
+id: 1d2d2aba-6141-405c-83ae-533475e92cd3
+title: dynamic_obj_demo
+platforms:
+- DotNetCore
+---
+
+```csharp
+using System.Dynamic;
+```
+
+```csharp
+dynamic cust = new ExpandoObject();
+```
+
+```csharp
+cust.FullName = "test name";
+```
+
+```csharp
+cust.ChangeName = (Action<string>)( (string newName) => { cust.FullName = newName;});
+```
+
+```csharp
+cust;
+```
+
+```csharp
+cust.ChangeName("My New name"); cust.FullName;
+```
+
+```csharp
+cust.ChangeName = (Func<string, int>) ( (string newName) =>
+            {
+                cust.FullName = newName;
+                return cust.FullName.Length;
+            } );
+```
+
+```csharp
+cust.ChangeName("Jan Vogel");
+```
+
+```csharp
+ExpandoObject CreateDynamicCustomer(string Name)
+{
+  dynamic cust = new ExpandoObject();
+  cust.FullName = Name;
+  cust.ChangeName = (Action<string>)((string newName) =>
+            {
+                cust.FullName = newName;
+            });
+  return cust;
+}
+```
+
+```csharp
+dynamic customer = CreateDynamicCustomer("Peter Vogel");
+```
