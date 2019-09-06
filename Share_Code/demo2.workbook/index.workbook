@@ -1,0 +1,22 @@
+---
+uti: com.xamarin.workbook
+id: c2ad516d-bf82-46ab-acec-122d9fbeb868
+title: demo2
+platforms:
+- DotNetCore
+packages:
+- id: RandomLib
+  version: 1.0.7
+---
+
+```csharp
+#r "RandomLib"
+```
+
+```csharp
+#load "../share_script.csx"
+```
+
+```csharp
+RandomDouble(0.0, 100.0);
+```

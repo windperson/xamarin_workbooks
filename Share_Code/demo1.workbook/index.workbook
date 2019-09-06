@@ -1,0 +1,22 @@
+---
+uti: com.xamarin.workbook
+id: f652f7f5-c2c1-4d92-b515-db5f101cdee0
+title: share_code_demo1
+platforms:
+- DotNetCore
+packages:
+- id: RandomLib
+  version: 1.0.7
+---
+
+```csharp
+#r "RandomLib"
+```
+
+```csharp
+#load "../share_script.csx"
+```
+
+```csharp
+Random0to9();
+```
